@@ -18,6 +18,20 @@
 })();
 
 (function(){
+    self.Ball = function(x,y,radius,board){
+        this.x = x;
+        this.y = y;
+        this.radius = radius;
+        this.speed_y = 0;
+        this.speed_x = 3;
+        this.board = board;
+
+        board.ball = this;
+        this.kind = "circle";
+    }
+})();
+
+(function(){
     self.Bar = function(x,y,width,height,board){
         this.x = x;
         this.y = y;
@@ -26,7 +40,7 @@
         this.board = board;
         this.board.bars.push(this);
         this.kind = "rectangle";
-        this.speed = 10;
+        this.speed = 20;
     }
     self.Bar.prototype = {
         down: function (){
@@ -54,6 +68,9 @@
     }
 
     self.Boardview.prototype = {
+        clean: function (){
+            this.ctx.clearRect(0, 0, this.board.width, this.board.height);
+        },
         draw: function(){
             for(var i = this.board.elements.length - 1; i >= 0; i--){
                 var el = this.board.elements[i];
@@ -62,41 +79,65 @@
 
             };
         },
-    }
-    
-    function draw(ctx,element){
-        if (element !== null && element.hasOwnProperty("kind")){
+        play: function (){
+            
+                this.clean();
+                this.draw();
+            }
+            
+        }
+
+       
+        function draw(ctx,element){
             switch(element.kind){
                 case "rectangle":
                     ctx.fillRect(element.x,element.y,element.width,element.height);
                     break;
+                case "circle":
+                    ctx.beginPath();
+                    ctx.arc(element.x,element.y,element.radius,0,7); 
+                    ctx.fill();
+                    ctx.closePath();
+                    break;
             }
-        }
-        
-    }
-
-})();
-
+            }
+    
+    })();
+    
 var board = new Board (800,400);
     var bar = new Bar(20,100,40,100,board);
     var bar = new Bar(740,100,40,100,board);
     var canvas = document.getElementById('canvas');
     var board_view = new BoardView(canvas,board);
+    var ball = new Ball(350,100,10,board);
 
 document.addEventListener("keydown", function(ev){
 
     if(ev.keyCode === 38){
+        ev.preventDefault();
         bar_2.up();
     }else if(ev.keyCode === 40){
+        ev.preventDefault();
         bar_2.down();
+    }else if(ev.keyCode === 87){
+        ev.preventDefault();
+        //Movimiento tecla W 
+        bar.up();
+    }else if(ev.keyCode === 83){
+        ev.preventDefault();
+        //Movimiento tecla S 
+        bar.down();
+    }else if(ev.keyCode === 32){ // Para la barra espaciadora
+        ev.preventDefault();
+        board.playing = !board.playing;
     }
 
 });
 
-window.addEventListener("load", main);
+window.requestAnimationFrame(controller);
 
-function main(){
-    
+function controller(){
+    board_view.play();
+    requestAnimationFrame(controller); 
 
-    board_view.draw();
 }
