@@ -40,6 +40,7 @@
         }
     }
 
+
 })();
 
 
@@ -60,7 +61,7 @@
                 draw(this.ctx,el);
 
             };
-        }
+        },
     }
     
     function draw(ctx,element){
@@ -76,14 +77,26 @@
 
 })();
 
-window.addEventListener("load", main);
-
-function main(){
-    var board = new Board (800,400);
+var board = new Board (800,400);
     var bar = new Bar(20,100,40,100,board);
     var bar = new Bar(740,100,40,100,board);
     var canvas = document.getElementById('canvas');
     var board_view = new BoardView(canvas,board);
+
+document.addEventListener("keydown", function(ev){
+
+    if(ev.keyCode === 38){
+        bar_2.up();
+    }else if(ev.keyCode === 40){
+        bar_2.down();
+    }
+
+});
+
+window.addEventListener("load", main);
+
+function main(){
+    
 
     board_view.draw();
 }
