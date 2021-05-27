@@ -1,5 +1,4 @@
-//Funcion anónima que se llama así misma
-//Para tener el control del juego en cuando al scope
+
 (function(){
     self.Board = function(width,height) {
         this.width = width;
@@ -114,14 +113,22 @@
                 draw(this.ctx,el);
             }
         },
-        check_collisions: function(){
-            for (var i = this.board.bars.length - 1; i >= 0 ; i--) {
+        check_collisions: function () {
+
+            for (var i = this.board.bars.length - 1; i >= 0; i--) {
                 var bar = this.board.bars[i];
-                console.log(board);
-                if(hit(bar, this.board.ball)){
+                if (hit(bar, this.board.ball)) {
                     this.board.ball.collision(bar);
                 }
             };
+
+            if(this.board.ball.y <= 0){   //Condicionales para que la pelota rebote en los laterales
+                this.board.ball.speed_y = this.board.ball.speed_y * -1;
+            }
+ 
+            if(this.board.ball.y >= 400){  
+                this.board.ball.speed_y = this.board.ball.speed_y * -1;
+            }
         },
         play: function(){
             if (this.board.playing) {
@@ -177,8 +184,8 @@
 })();
 
 var board = new Board(800,400);
-var bar = new Bar(20,100,40,100,board);
-var bar_2 = new Bar(700,100,40,100,board);
+var bar = new Bar(50,100,15,100,board);
+var bar_2 = new Bar(735,100,15,100,board);
 var canvas = document.getElementById('canvas');
 var board_view = new BoardView(canvas,board);
 var ball = new Ball(350,100,10,board);
@@ -207,6 +214,34 @@ document.addEventListener("keydown", function(ev){
         board.playing = !board.playing;
     }
 });
+
+var puntosJugador1 = document.getElementById("puntosJugador1"); //Variables que se piden de HTML para utilizarlas para aumentar los puntajes
+var puntosJugador2 = document.getElementById("puntosJugador2");
+
+function reiniciar() { // Funcion para reiniciar el juego 
+    if(ball.x >=800 || ball.x <= 0){
+        if(ball.x >=800){
+            alert("Ganó el jugador 1");
+            puntosJugador1.innerHTML = (Number(puntosJugador1.innerHTML)+1)
+        }
+        if(ball.x <=0){
+            alert("Ganó el jugador 2");
+            puntosJugador2.innerHTML = (Number(puntosJugador2.innerHTML)+1)
+        } 
+        bar.x = 20;
+        bar.y = 140;
+        bar2.x = 735;
+        bar2.y = 140;
+        ball.x = 400;
+        ball.y = 200;
+        ball.direction = 1;
+        ball.bounce_angle = 0;
+        ball.speed_x = 2;
+        ball.speed_y = 0;
+        ball.max_bounce_angle = Math.PI / 12;
+        board.playing = !board.playing;
+    }
+}
 
 board_view.draw(); 
 

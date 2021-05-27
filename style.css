@@ -1,0 +1,17 @@
+#canvas {
+    border: solid;
+    background-image: url("MESA.jpg");
+    display: block;
+    width: 800px;
+    margin: 0 auto;
+  }
+  
+  body {
+    display: block;
+    margin-top: 100px;
+  }
+  
+  h1 {
+    text-align: center;
+    font-family:Impact, Haettenschweiler, 'Arial Narrow Bold', sans-serif
+  }
