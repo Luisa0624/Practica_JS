@@ -6,11 +6,12 @@
         this.game_over = false;
         this.bars = [];
         this.ball = null;
+        this.playing = false;
     }
 
     self.Board.prototype={
        get elements (){
-            var elements=this.bars;
+        var elements = this.bars.map(function(bar){  return bar;  }); 
             elements.push(this.ball);
             return elements;
        } 
@@ -25,10 +26,19 @@
         this.speed_y = 0;
         this.speed_x = 3;
         this.board = board;
+        this.direction = 1;
 
         board.ball = this;
         this.kind = "circle";
     }
+
+    self.Ball.prototype = {
+        move: function(){
+            this.x += (this.speed_x * this.direction);
+            this.y += (this.speed_y);
+        }
+    }
+
 })();
 
 (function(){
@@ -80,13 +90,14 @@
             };
         },
         play: function (){
-            
+            if(this.board.playing){
                 this.clean();
                 this.draw();
+                this.check_collisions();
+                this.board.ball.move();
             }
-            
         }
-
+    }
        
         function draw(ctx,element){
             switch(element.kind){
@@ -100,9 +111,9 @@
                     ctx.closePath();
                     break;
             }
-            }
+         }
     
-    })();
+})();
     
 var board = new Board (800,400);
     var bar = new Bar(20,100,40,100,board);
@@ -127,12 +138,14 @@ document.addEventListener("keydown", function(ev){
         ev.preventDefault();
         //Movimiento tecla S 
         bar.down();
-    }else if(ev.keyCode === 32){ // Para la barra espaciadora
+    }else if(ev.keyCode === 32){ 
         ev.preventDefault();
         board.playing = !board.playing;
     }
 
 });
+
+board_view.draw();
 
 window.requestAnimationFrame(controller);
 
